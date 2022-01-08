@@ -1,11 +1,17 @@
-const {Schema} = require("mongoose");
+const {Schema, model} = require("mongoose");
+
 
 const userSchema = new Schema({
+    avatar:{
+        type:String,
+        required:false,
+        default:'images/default.png'
+    },
     email:{
         type:String,
         required:true,
         minLength:5,
-        maxLength:15,
+        maxLength:30,
         trim:true
     },
     password:{
@@ -20,6 +26,12 @@ const userSchema = new Schema({
         type:String,
         required:false
     },
+    isActivated:{type:Boolean, default:false},
+    activationLink:{type:String},
+    roles:[{type:String, ref:'Role'}],
+    actions:[{ref:'ActionProduct', required:false, type:Schema.Types.ObjectId}],
+    product:[{ref:'Product', type:Schema.Types.ObjectId, required:false}],
+    logs:[{ref:'Logs', type:Schema.Types.ObjectId, required:false}],
     cart:{
         items:[{
             count:{
@@ -36,3 +48,4 @@ const userSchema = new Schema({
         ]
     }
 })
+module.exports = model('User',userSchema)
