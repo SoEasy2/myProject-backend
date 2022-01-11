@@ -4,9 +4,8 @@ class PasswordController{
     async changePassword(req,res,next){
         try {
             const {email, currentPassword, newPassword} = req.body
-            const userData = await passwordService.changePassword(email,currentPassword,newPassword)
-            res.cookie('refreshToken', userData.refreshToken, {maxAge:30*24*60*60*1000, httpOnly: true})
-            return res.json(userData)
+            const response = await passwordService.changePassword(email,currentPassword,newPassword)
+            return res.json(response)
         }catch (e) {
             next(e)
         }

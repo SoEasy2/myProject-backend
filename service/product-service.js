@@ -3,6 +3,7 @@ const TokenDto = require("../dtos/user-dto");
 const tokenService = require('./token-service');
 const UserModel = require("../models/user");
 const UserDto = require('../dtos/user-dto')
+const ProductDto = require('../dtos/product-dto')
 class ProductService{
     async createProduct(data, file, refreshToken){
         const token = await tokenService.findToken(refreshToken)
@@ -28,7 +29,7 @@ class ProductService{
         }
     }
     async getConfirmProduct(){
-        const products = await productModel.find({confirm:true}).populate({path:'user', select:'avatar email name phone'})
+        const products = await productModel.find({confirm:true, isBuy:false}).populate({path:'user', select:'avatar email name phone'})
         return products
     }
     async uploadImageProduct(id,file){
@@ -36,6 +37,16 @@ class ProductService{
         product.img = file;
         await product.save()
         return true;
+    }
+    async getProductById(id){
+        try{
+            const product = await productModel.findOne({_id:id}).populate({path:'user', select:'avatar name phone'})
+            if (!product) return null
+            const productDto = new ProductDto(product)
+            return productDto
+        }catch (e) {
+            return null
+        }
     }
 
 }

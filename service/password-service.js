@@ -6,26 +6,18 @@ const tokenService = require("./token-service");
 const logsService = require('./logs-service')
 const PasswordModel = require('../models/reset-password')
 const mailService =require('./mail-service')
-const ActionModel = require('../models/action-product')
-const UserDto = require('../dtos/user-dto')
+
 
 class PasswordService {
     async changePassword(email, currentPassword, newPassword){
         const user = await UserModel.findOne({email}).populate({path:'actions'}).populate({path:'logs'})
         const isPassEquals = await bcrypt.compare(currentPassword, user.password);
-        if (!isPassEquals) throw ApiError.BadRequest('INCORRECT.INCORRECT_PASSWORD')
+        if (!isPassEquals) return false
         const hashPassword = await bcrypt.hash(newPassword,10)
         user.password = hashPassword;
         await user.save();
         await logsService.changePassword(email)
-        const tokenDto = new TokenDto(user)
-        const tokens = tokenService.generateTokens({...tokenDto});
-        await tokenService.saveToken(tokenDto.id, tokens.refreshToken);
-        const userDto = new UserDto(user)
-        return {
-            ...tokens,
-            user:userDto
-        }
+       return true
     }
     async resetPassword(email, password){
         const user = await UserModel.findOne({email}).populate({path:'logs'})

@@ -50,6 +50,7 @@ class UserService{
             user:userDto
         }
     }
+
     async logout(refreshToken){
         const token = await tokenService.removeToken(refreshToken);
         return token;
@@ -59,7 +60,7 @@ class UserService{
         const userData = tokenService.validateRefreshToken(refreshToken)
         const tokenFromDb = await tokenService.findToken(refreshToken)
         if(!userData || !tokenFromDb) throw ApiError.UnauthorizedError()
-        const user = await UserModel.findById(userData.id).populate({path:'actions'}).populate({path:'logs', select:'name date'})
+        const user = await UserModel.findById(tokenFromDb.user).populate({path:'actions'}).populate({path:'logs', select:'name date'})
         const tokenDto = new TokenDto(user)
         const tokens = tokenService.generateTokens({...tokenDto});
         await tokenService.saveToken(tokenDto.id, tokens.refreshToken);

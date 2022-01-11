@@ -69,12 +69,28 @@ class UserController{
             next(e)
         }
     }
-
+    async getTransactionsUser(req,res,next){
+        try{
+            const {refreshToken} = req.cookies
+            const userTransactions = await profileService.getTransactionsUser(refreshToken)
+            res.json(userTransactions)
+        }catch (e) {
+            next(e)
+        }
+    }
+    async updateProfile(req,res,next){
+        try {
+            const {refreshToken} = req.cookies
+            const userData = await profileService.updateProfile(refreshToken, req.body)
+            res.cookie('refreshToken', userData.refreshToken, {maxAge:30*24*60*60*1000, httpOnly: true})
+            return res.json(userData)
+        }catch (e) {
+            next(e)
+        }
+    }
     async test(req,res,next){
-        const user = new roleModel()
-        const admin = new roleModel({value:'ADMIN'})
-        await user.save()
-        await admin.save()
+        if(Object.keys(req.body).length) console.log(true)
+        if(!req.body) console.log(false)
     }
 }
 

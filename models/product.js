@@ -27,6 +27,7 @@ const product = new Schema({
     date:{
         type:Date, required:true, default:new Date()
     },
+    isBuy:{type:Boolean, default:false},
     user:{
         type:Schema.Types.ObjectId, ref:'User', required:true
     }

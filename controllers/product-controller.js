@@ -24,5 +24,14 @@ class ProductController{
             next(e)
         }
     }
+    async getProductById(req,res,next){
+        try{
+            const id = req.params.id
+            const product = await productService.getProductById(id)
+            return res.json(product)
+        }catch (e) {
+            next(e)
+        }
+    }
 }
 module.exports = new ProductController();

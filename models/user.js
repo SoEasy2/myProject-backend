@@ -26,12 +26,14 @@ const userSchema = new Schema({
         type:String,
         required:false
     },
+    date:{type:Date, default:new Date()},
     isActivated:{type:Boolean, default:false},
     activationLink:{type:String},
     roles:[{type:String, ref:'Role'}],
     actions:[{ref:'ActionProduct', required:false, type:Schema.Types.ObjectId}],
     product:[{ref:'Product', type:Schema.Types.ObjectId, required:false}],
     logs:[{ref:'Logs', type:Schema.Types.ObjectId, required:false}],
+    transactions:[{ref:'Transactions', type:Schema.Types.ObjectId, required:false}],
     cart:{
         items:[{
             count:{
